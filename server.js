@@ -1,32 +1,34 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
-const connectDB = require('./config/db')
-const cors = require("cors")
-const todo = require("./routes/todoRoutes");
-const user = require('./routes/userRoutes')
-const adminRoutes = require("./routes/adminRoutes");
+const connectDB = require('./config/db');
+const cors = require('cors');
+const todoRoutes = require('./routes/todoRoutes');
+const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
-const PORT = process.env.PORT || 5000;
-
-// connect to database
+// Connect to DB
 connectDB();
 
-// app.use(cors({
-//     origin: "http://localhost:5173", // React app URL
-//     credentials: true, 
-// }));
+// Middleware
 app.use(express.json());
 
+// CORS
+// In production, replace '*' with your frontend URL
+app.use(cors({
+    origin: "*",
+    credentials: true
+}));
 
-// connect routes
-app.use('/api/v1/todos', todo);
-app.use('/api/v1/user', user)
+// Routes
+app.use('/api/v1/todos', todoRoutes);
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/admin', adminRoutes);
 
-app.use("/api/v1/admin", adminRoutes);
+// Root route
+app.get('/', (req, res) => {
+    res.send('MERN Todo App API is running!');
+});
 
-
-
-app.listen(PORT, () =>{
-    console.log(`server started on port ${PORT} `);
-})
+// Export app for Vercel
+module.exports = app;
