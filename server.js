@@ -9,6 +9,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const cookieParser = require("cookie-parser");
 const protect = require("./middlewares/authMiddleware"); 
 
+const PORT = process.env.PORT || 5000;
 
 // Connect to DB
 connectDB();
@@ -20,7 +21,6 @@ app.use(cookieParser());
 // CORS configuration to allow requests from frontend
 app.use(cors({
   origin: "http://localhost:5173",
-
   credentials: true
 }));
 
@@ -29,6 +29,9 @@ app.use('/api/v1/todos', protect, todoRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
 
-const PORT = process.env.PORT || 5000;
+app.get('/', (req, res) => {
+  res.send('Welcome to the Todo API');
+});
+
 
 module.exports = app;
