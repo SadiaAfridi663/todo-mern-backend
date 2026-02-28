@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middlewares/validate");
-const protect = require("../middlewares/authMiddleware"); 
+
 const {
   getTodos,
   createTodo,
@@ -15,11 +15,11 @@ const {
 } = require("../validators/todoValidator");
 
 // GET all todos
-router.get("/", protect, getTodos);
+router.get("/",  getTodos);
 
 // POST create todo with validation middleware
-router.post("/", protect, validate(createTodoSchema), createTodo);
-router.patch('/:id', protect, validate(updatedTodoSchema), updateTodo);
-router.delete("/:id", protect, deleteTodo)
+router.post("/",  validate(createTodoSchema), createTodo);
+router.patch('/:id',  validate(updatedTodoSchema), updateTodo);
+router.delete("/:id",  deleteTodo)
 
 module.exports = router;

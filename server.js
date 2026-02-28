@@ -7,6 +7,7 @@ const todoRoutes = require('./routes/todoRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const cookieParser = require("cookie-parser");
+const protect = require("./middlewares/authMiddleware"); 
 
 
 // Connect to DB
@@ -16,38 +17,17 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS
-// In production, replace '*' with your frontend URL
-// app.use(cors({
-//     origin: "*",
-//     credentials: true
-// }));
+// CORS configuration to allow requests from frontend
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
 }));
 
 // Routes
-app.use('/api/v1/todos', todoRoutes);
+app.use('/api/v1/todos', protect, todoRoutes);
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
 
-// Root route
-// app.get('/', (req, res) => {
-//     res.send('MERN Todo App API is running!');
-// });
-
-
-
-// // Export app for Vercel
-// module.exports = app;
-
-// Root route
-app.get('/', (req, res) => {
-    res.send('MERN Todo App API is running!');
-});
-
-// Start server locally
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
