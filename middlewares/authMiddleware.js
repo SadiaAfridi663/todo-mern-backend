@@ -11,6 +11,8 @@ const authMiddleware = async (req, res, next) => {
     });
   }
 
+  console.log("token:", token);
+
   try {
     const decoded = jwt.verify(token, jwtSecret);
 

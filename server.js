@@ -20,7 +20,10 @@ app.use(cookieParser());
 
 // CORS configuration to allow requests from frontend
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173", // for local dev
+    "https://todo-mern-frontend-green.vercel.app" // deployed frontend
+  ],
   credentials: true
 }));
 
