@@ -1,23 +1,29 @@
-const jwt = require('jsonwebtoken');
-const Users = require('../models/User');
+const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 
-
 const authMiddleware = async (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if(!authHeader || !authHeader.startsWith('Bearer ')){
-        return res.status(401).json({ isSuccess: false, message: 'No token provided' });
-    }
+  const token = req.cookies?.token;
 
-    const token = authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({
+      isSuccess: false,
+      message: "Not authorized. No token found.",
+    });
+  }
 
-    try {
-        const decoded = jwt.verify(token, jwtSecret); // decoded = { user: { id, userName }, iat, exp }
-        req.user = decoded.user; // store only user info in req.user
-        next();
-    } catch (err) {
-        return res.status(401).json({ isSuccess:false, message:'Token is not valid' });
-    }
+  try {
+    const decoded = jwt.verify(token, jwtSecret);
+
+    // Attach user info to request
+    req.user = decoded.user;
+
+    next();
+  } catch (err) {
+    return res.status(401).json({
+      isSuccess: false,
+      message: "Invalid or expired token",
+    });
+  }
 };
 
 module.exports = authMiddleware;
