@@ -18,14 +18,25 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS configuration to allow requests from frontend
-app.use(cors({
-  origin: [
-    "http://localhost:5173", // for local dev
-    "https://todo-mern-frontend-green.vercel.app" // deployed frontend
-  ],
-  credentials: true
-}));
+// CORS configuration to allow credentialed requests from frontend origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://todo-mern-frontend-green.vercel.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow non-browser clients/tools and configured browser origins
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS: origin not allowed"));
+    },
+    credentials: true,
+  })
+);
 
 // Routes
 app.use('/api/v1/todos', protect, todoRoutes);
